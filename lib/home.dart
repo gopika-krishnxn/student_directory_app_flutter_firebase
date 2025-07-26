@@ -9,28 +9,32 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
+  TextEditingController namecontroller = TextEditingController();
+  TextEditingController phonecontroller = TextEditingController();
+  TextEditingController addresscontroller = TextEditingController();
   final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.pinkAccent[100],
+        backgroundColor: const Color(0xFF0023E7),
         foregroundColor: Colors.white,
         title: Text(
           'Student Directory',
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          namecontroller.clear();
+          phonecontroller.clear();
+          addresscontroller.clear();
           showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                backgroundColor: Colors.pink[50],
+                backgroundColor: Colors.white,
                 title: Text(
                   'Add Student Data',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -39,7 +43,7 @@ class _HomeState extends State<Home> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      controller: nameController,
+                      controller: namecontroller,
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
@@ -49,8 +53,9 @@ class _HomeState extends State<Home> {
                         label: Text('Name'),
                       ),
                     ),
+                    SizedBox(height: 20),
                     TextFormField(
-                      controller: phoneController,
+                      controller: phonecontroller,
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
@@ -60,33 +65,41 @@ class _HomeState extends State<Home> {
                         label: Text('Phone Number'),
                       ),
                     ),
+                    SizedBox(height: 20),
                     TextFormField(
-                      controller: addressController,
+                      controller: addresscontroller,
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        label: Text('Student Address'),
+                        label: Text('Address'),
                       ),
                     ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        screen(
-                          name: nameController.text,
-                          phone: phoneController.text,
-                          address: addressController.text,
-                          context: context,
-                        );
-                      },
-                      child: Text(
-                        'Add student',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pinkAccent[100],
+                    SizedBox(height: 20),
+                    SizedBox(
+                      height: 50,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          screen(
+                            name: namecontroller.text,
+                            phone: phonecontroller.text,
+                            address: addresscontroller.text,
+                            context: context,
+                          );
+                        },
+                        child: Text(
+                          'Add Student',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0023E7),
+                        ),
                       ),
                     ),
                   ],
@@ -95,7 +108,7 @@ class _HomeState extends State<Home> {
             },
           );
         },
-        backgroundColor: Colors.pinkAccent[100],
+        backgroundColor: const Color(0xFF0023E7),
         foregroundColor: Colors.white,
         child: Icon(Icons.add),
       ),
@@ -109,7 +122,137 @@ class _HomeState extends State<Home> {
           return ListView.builder(
             itemCount: studentdata.length,
             itemBuilder: (context, index) {
-              return ListTile(title: Text(studentdata[index]['Name']));
+              return ListTile(
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        namecontroller.text = studentdata[index]['Name'];
+                        phonecontroller.text = studentdata[index]['Phone'];
+                        addresscontroller.text = studentdata[index]['Address'];
+                        showModalBottomSheet(
+                          backgroundColor: Colors.white,
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Update",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  TextFormField(
+                                    controller: namecontroller,
+                                    decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      label: Text('Name'),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20),
+                                  TextFormField(
+                                    controller: phonecontroller,
+                                    decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      label: Text('Phone Number'),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20),
+                                  TextFormField(
+                                    controller: addresscontroller,
+                                    decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      label: Text('Address'),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20),
+                                  SizedBox(
+                                    height: 50,
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        updatestudent(
+                                          studentdata[index].id,
+                                          namecontroller.text,
+                                          phonecontroller.text,
+                                          addresscontroller.text,
+                                          context,
+                                        );
+                                      },
+                                      child: Text(
+                                        'Add Student',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(
+                                          0xFF0023E7,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        deletestudent(studentdata[index].id, context);
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
+                  ],
+                ),
+                title: Text(
+                  studentdata[index]['Name'],
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      studentdata[index]['Phone'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: Colors.black45,
+                      ),
+                    ),
+                    Text(
+                      studentdata[index]['Address'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ],
+                ),
+              );
             },
           );
         },
